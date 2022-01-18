@@ -1,20 +1,21 @@
 <?php
 
-checkFileExist('access.log');
-
+$jsonParse = checkFileExist('access.log');
+var_dump($jsonParse);
 //Проверка наличия файла в системе
-function checkFileExist($filePath){
+function checkFileExist($filePath): bool|string
+{
     if (file_exists($filePath)) {
         echo "The file $filePath exists";
     } else {
         echo "The file $filePath does not exist";
         $path = 'access.log';
     }
-    parseFile($filePath);
+    return parseFile($filePath);
 }
 
 //Разбор файла
-function parseFile($filePath)
+function parseFile($filePath): bool|string
 {
     $pattern = "/(\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) (\".*?\") (\".*?\")/";
 
@@ -30,7 +31,7 @@ function parseFile($filePath)
         'statusCodes' => array_count_values($resultArray[10]),
     ];
 
-    var_dump(json_encode($bodyJSON));
+    return json_encode($bodyJSON);
 }
 
 //Поиск используемых поисковиков
