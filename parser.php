@@ -25,7 +25,7 @@ function parseFile($filePath): bool|string
 
     $bodyJSON = (object) [
         'views' => count($resultArray[0]),
-        'urls' => count(array_unique($resultArray[12])),
+        'urls' => count(array_unique($resultArray[8])),
         'traffic' => array_sum($resultArray[11]),
         'crawlers' => array_count_values(searchCrawlers($resultArray[13])),
         'statusCodes' => array_count_values($resultArray[10]),
