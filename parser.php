@@ -1,7 +1,7 @@
 <?php
 
-$jsonParse = checkFileExist('access.log');
-var_dump($jsonParse);
+$jsonParse = checkFileExist('test.log');
+//var_dump($jsonParse);
 //Проверка наличия файла в системе
 function checkFileExist($filePath): bool|string
 {
@@ -22,16 +22,30 @@ function parseFile($filePath): bool|string
     $fileContent = file_get_contents($filePath);
 
     preg_match_all($pattern, $fileContent, $resultArray);
+    $sumTraffic = getTraffic($resultArray);
 
     $bodyJSON = (object) [
         'views' => count($resultArray[0]),
         'urls' => count(array_unique($resultArray[8])),
-        'traffic' => array_sum($resultArray[11]),
+        'traffic' => $sumTraffic,
         'crawlers' => array_count_values(searchCrawlers($resultArray[13])),
         'statusCodes' => array_count_values($resultArray[10]),
     ];
 
     return json_encode($bodyJSON);
+}
+
+//Получеине трафика сети
+function getTraffic($resultArray): int
+{
+    $sumTraffic = 0;
+    for ($i=0; $i<count($resultArray[11]); $i++){
+        if ($resultArray[10][$i] != "301") {
+            $sumTraffic += $resultArray[11][$i];
+        }
+    }
+
+    return $sumTraffic;
 }
 
 //Поиск используемых поисковиков
